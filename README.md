@@ -1,7 +1,7 @@
-Circles of Influence
-====================
+# Circles of Influence
 
 The most popular posts and profiles on Google+
+
 
 ## Installation
 
@@ -21,3 +21,8 @@ The most popular posts and profiles on Google+
 
 5. Start *Circles of Influence*:
   * `docker-compose up -d`
+
+
+## License
+
+[MIT](LICENSE.txt)
