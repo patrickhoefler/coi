@@ -1,11 +1,10 @@
 # Django settings for coi project.
 import os
 
-DEBUG = True
-if os.environ.get('FIG_FILE'):
-    DEBUG = False
-
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     ('Patrick Hoefler', 'patrick.hoefler@gmail.com'),
