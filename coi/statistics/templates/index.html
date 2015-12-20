@@ -1,0 +1,202 @@
+{% load cache_extras %}
+
+<html itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <title>Circles of Influence – The most popular posts and profiles on Google+</title>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-53893828-2', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+    <style type="text/css">
+        /* Reset */
+        /* html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+        	margin: 0;
+        	padding: 0;
+        	border: 0;
+        	font-size: 100%;
+        	font: inherit;
+        	vertical-align: baseline;
+        }
+        /* HTML5 display-role reset for older browsers */
+        /* article, aside, details, figcaption, figure,
+        footer, header, hgroup, menu, nav, section {
+        	display: block;
+        }
+        body {
+        	line-height: 1;
+        }
+        ol, ul {
+        	list-style: none;
+        }
+        blockquote, q {
+        	quotes: none;
+        }
+        blockquote:before, blockquote:after,
+        q:before, q:after {
+        	content: '';
+        	content: none;
+        }
+        table {
+        	border-collapse: collapse;
+        	border-spacing: 0;
+        } */
+
+        /* Custom CSS */
+        body, table {font-family: "Helvetica Neue", Arial, sans-serif; font-size: 95%; word-wrap: break-word; line-height: 1.2;}
+        a {text-decoration: none; /*color: #14356C;*/}
+        a:hover {text-decoration: underline;}
+        h2 {padding-left: 30px; font-size: 100%;}
+    </style>
+</head>
+
+<body>
+
+<div style="max-width: 1124px; min-width: 702px; margin: auto; overflow: auto;">
+
+    <div style="width: 800px; margin: auto; overflow: auto; margin-top: 20px; margin-bottom: 10px;">
+        <div style="width: 400px; float: left;">
+            <h1 style="margin-top: 0; padding-top: 0;">Circles of Influence <span style="vertical-align: super; font-size: 40%; color: #a00;">alpha</span></h1>
+            <div style="margin-top: -20px; margin-bottom: 20px;">
+                The most popular posts and profiles on Google+
+            </div>
+        </div>
+        <div style="width: 400px; float: left; padding-top: 20px;">
+            <div class="g-plusone" data-size="medium" data-annotation="inline" data-width="400">
+            </div>
+            <!-- <div style="padding-top: 10px;">
+                <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://coi.hoefler.st/"></a>
+                <noscript><a href="http://flattr.com/thing/401936/Circles-of-Influence" target="_blank">
+                <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
+            </div> -->
+        </div>
+    </div>
+
+    <div style="width: 440px; float: left; background-color: #fff; border: 1px solid #eee;">
+    <h2>Top 10 People <span style="font-size: 80%; font-weight: normal;">of the last 24 hours</span></h2>
+
+    {% if activities_list_24 %}
+        <table cellspacing="8">
+
+        {% for user in activities_list_24 %}
+            <tr style="border-bottom: 1px solid #ccc;">
+                <td style="text-align: right;">{{forloop.counter}}</td>
+                <td style="width: 48px; height: 48px;"><img src="{{user.image}}" /></td>
+                <td style="width: 120px;"><a href="/{{user.id}}">{{user.displayName}}</a></td>
+                <td style="width: 120px;"><img src="{{user.score_list_24|sparkline_url}}" alt="" title="Score for the last 24 hours (updated {{user.updated|timesince}} ago)" /></td>
+                <td style="text-align: right; width: 48px;"><span title="Score for the last 24 hours (updated {{user.updated|timesince}} ago)">{{user.score_24}}</span></td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+    </div>
+
+    <div style="width: 680px; float: left; background-color: #fff; border: 1px solid #eee;">
+    <h2>Top 10 Posts <span style="font-size: 80%; font-weight: normal;">of the last 24 hours</span></h2>
+
+    {% if posts_list_24 %}
+        <table cellspacing="8">
+
+        {% for post in posts_list_24 %}
+            <tr style="border-bottom: 1px solid {% cycle '#ccc' '#fff' %};">
+                <td style="text-align: right;">{{forloop.counter}}</td>
+                <td><img src="{{post.actorImage}}" /></td>
+                <td style="width: 120px;"><a href="/{{post.actorId}}">{{post.actorDisplayName}}</a></td>
+                <td>
+                  <div style="height: 48px; overflow: hidden; width: 330px;">
+                    <a href="{{post.url}}" target="_blank">{{post.image|img_right}}
+                      <div style="margin-right: 74px;">{{post.title}}</div>
+                    </a>
+                  </div>
+                </td>
+                <td style="text-align: right; width: 48px;">
+                  <span title="Score of this post (updated {{post.updated|timesince}} ago)">{{post.score}}</span>
+                </td>
+                <td style="width: 70px; font-size: 80%;">
+                    <img src="http://chart.apis.google.com/chart?chs=48x48&cht=pc&chco=DEEAFF|FFFFFF&chd=t:{{post.published|age_chart_values:1}}&amp;chp=4.712"
+                      alt="published {{post.published|timesince}} ago"
+                      title="published {{post.published|timesince}} ago"
+                    />
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+    </div>
+
+    <div style="width: 440px; float: left; background-color: #fff; border: 1px solid #eee;">
+    <h2>Top 100 People <span style="font-size: 80%; font-weight: normal;">of the last 3 days</span></h2>
+
+    {% if activities_list %}
+        <table cellspacing="8">
+
+        {% for user in activities_list %}
+            <tr style="border-bottom: 1px solid #ccc;">
+                <td style="text-align: right;">{{forloop.counter}}</td>
+                <td style="width: 48px; height: 48px;"><img src="{{user.image}}" /></td>
+                <td style="width: 120px;"><a href="/{{user.id}}">{{user.displayName}}</a></td>
+                <td style="width: 120px;"><img src="{{user.score_list|sparkline_url}}" alt="" title="Score for the last 3 days (updated {{user.updated|timesince}} ago)" /></td>
+                <td style="text-align: right; width: 48px;"><span title="Score for the last 3 days (updated {{user.updated|timesince}} ago)">{{user.score}}</span></td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+    </div>
+
+    <div style="width: 680px; float: left; background-color: #fff; border: 1px solid #eee;">
+    <h2>Top 100 Posts <span style="font-size: 80%; font-weight: normal;">of the last 3 days</span></h2>
+
+    {% if posts_list %}
+        <table cellspacing="8">
+
+        {% for post in posts_list %}
+            <tr style="border-bottom: 1px solid {% cycle '#ccc' '#fff' %};">
+                <td style="text-align: right;">{{forloop.counter}}</td>
+                <td><img src="{{post.actorImage}}" /></td>
+                <td style="width: 120px;"><a href="/{{post.actorId}}">{{post.actorDisplayName}}</a></td>
+                <td><div style="height: 48px; overflow: hidden; width: 330px;"><a href="{{post.url}}" target="_blank">{{post.image|img_right}}<div style="margin-right: 74px;">{{post.title}}</div></a></div></td>
+                <td style="text-align: right; width: 48px;"><span title="Score of this post (updated {{post.updated|timesince}} ago)">{{post.score}}</span></td>
+                <td style="width: 70px; font-size: 80%;">
+                    <img src="http://chart.apis.google.com/chart?chs=48x48&cht=pc&chco=DEEAFF|FFFFFF&chd=t:{{post.published|age_chart_values}}&amp;chp=4.712" alt="published {{post.published|timesince}} ago" title="published {{post.published|timesince}} ago" />
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+    </div>
+
+<div style="text-align: center; font-size: 80%; color: #999; padding: 10px; clear: both;">
+    A <a href="https://patrickhoefler.net" target="_blank" style="text-decoration: none;">Patrick Hoefler</a> Production.
+    Data provided by <a href="https://plus.google.com/" target="_blank" style="text-decoration: none;">Google+</a>.</div>
+</div>
+
+</body>
+</html>

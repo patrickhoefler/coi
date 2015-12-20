@@ -1,0 +1,59 @@
+# dev environment
+
+mongo:
+  image: mongo:3.2
+  restart: always
+  ports:
+    - "27017:27017"
+
+crawl:
+  build: .
+  restart: always
+  environment:
+    GOOGLE_API_KEY: ""
+  links:
+    - mongo
+  volumes:
+    - .:/usr/src/app
+  command: python -u ../scripts/gp_crawl_activities.py
+
+queue:
+  build: .
+  restart: always
+  links:
+    - mongo
+  volumes:
+    - .:/usr/src/app
+  command: python -u ../scripts/gp_queue_users.py
+
+scrape:
+  build: .
+  restart: always
+  links:
+    - mongo
+  volumes:
+    - .:/usr/src/app
+  command: python -u ../scripts/gp_scrape_whats_hot.py
+
+web:
+  build: .
+  restart: always
+  environment:
+    DJANGO_SECRET_KEY: "replace_with_some_random_string"
+  links:
+    - mongo
+  volumes:
+    - .:/usr/src/app
+  expose:
+    - "8000"
+  command: gunicorn -b 0.0.0.0:8000 --log-file - --max-requests 1 wsgi
+
+nginx:
+  image: nginx:1.9
+  restart: always
+  links:
+    - web
+  volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  ports:
+    - "80:80"
